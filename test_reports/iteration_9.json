@@ -1,0 +1,20 @@
+{
+  "summary": "Smoke test of the cloned ETI Educom app (Next.js + FastAPI). Backend: 22/22 pytest checks passed: health, quick-enquiry and contact POST, contact validation (422), admin login with a wrong password (401), admin login with the correct password (requires_setup, QR and secret returned), admin-only GET /api/contact without a token (401/403), public lists (programs/blogs/faqs/reviews/events), /sitemap.xml (sitemapindex), and all 8 public pages plus /eti-manage-x9k2m returning 200. UI (Playwright): the hero Quick Enquiry form submits (200) and redirects to /thank-you; the /contact form submits (200) and redirects to /thank-you; the admin page shows the 'Invalid password. 4 attempts remaining.' toast for a wrong password and the 'Set Up 2FA' screen with the QR code and secret for the correct password. No page errors and no backend 500s. The 2FA confirmation step was NOT done on purpose: entering an OTP would save a TOTP secret on the real admin account and lock out the owner.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": ["/app/backend/tests/test_clone_smoke.py", "/app/test_reports/pytest/pytest_clone_smoke.xml"],
+  "action_items": [
+    "Report the unset env/config to the user: CRM_WEBHOOK_URL is missing from backend/.env (log: 'CRM_WEBHOOK_URL not configured; skipping CRM forwarding'), so leads are not sent to the CRM. WhatsApp/MSG91 notifications are off (log: 'WhatsApp notifications disabled or not configured'). The intentionally blank keys are CLOUDINARY_*, META_PIXEL_ID, META_CAPI_ACCESS_TOKEN, META_TEST_EVENT_CODE and GOOGLE_INDEXING_SERVICE_ACCOUNT_JSON.",
+    "The sitemap uses the production domain https://www.etieducom.com (from SITE_PUBLIC_URL). This is expected for a clone and is not a defect."
+  ],
+  "critical_code_review_comments": [
+    "server.py is 5000+ lines. It is a candidate for splitting, but that is outside the scope of a clone."
+  ],
+  "updated_files": ["/app/backend/tests/test_clone_smoke.py"],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "Admin password ETIadmin@2026 (from /app/memory/test_credentials.md) works; TOTP not yet enabled, so the first login shows the setup screen",
+  "seed_data_creation": "None. The 4 TEST_ leads I created (2 quick_enquiries, 2 contact_enquiries) were deleted by id.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Admin login is rate-limited to 5/minute. Do not complete the 2FA setup on the real admin account. Run the tests with: cd /app/backend && REACT_APP_BACKEND_URL=... pytest tests/test_clone_smoke.py"
+}
