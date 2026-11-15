@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   MapPin, Phone, Mail, Clock, Award, Users, GraduationCap, CheckCircle,
   ChevronRight, Monitor, Wifi, BookOpen, Building2, Star, Navigation,
@@ -79,8 +80,7 @@ const branchInfo = {
   email: 'helpdesk@etieducom.com',
   timings: 'Mon-Sat: 9:00 AM - 7:00 PM',
   geo: { lat: 32.2643, lng: 75.6421 },
-  mapUrl:
-    'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3393.8!2d75.640!3d32.264!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzLCsDE1JzU0LjUiTiA3NcKwMzgnMzEuNiJF!5e0!3m2!1sen!2sin!4v1700000000000',
+  mapUrl: 'https://maps.google.com/maps?q=32.2643,75.6421&z=16&output=embed',
 };
 
 const facilities = [
@@ -252,68 +252,116 @@ const faqSchema = {
 
 export default function PathankotBranchPage() {
   return (
-    <div className="min-h-screen" data-testid="pathankot-branch-page">
+    <div className="min-h-screen bg-white" data-testid="pathankot-branch-page">
       {/* SEO: Structured Data */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
 
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary via-primary-dark to-primary py-20 lg:py-28 overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
-        </div>
+      <BranchHero />
+      <StatsStrip />
+      <IntroSection />
+      <CoursesSection />
+      <TrainingSection />
+      <FacilitiesSection />
+      <LocationSection />
+      <FaqSection />
+      <ServiceAreas />
+      <BranchCta />
+    </div>
+  );
+}
 
-        <div className="container-main relative">
-          <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-full text-sm font-medium mb-6">
-              <Building2 className="w-4 h-4" />
-              ISO 9001:2015 Certified · MSME Registered · Since 2017
-            </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-              Best Computer Institute in <span className="text-yellow-400">Pathankot</span>
+function SectionLabel({ icon: Icon, children, light }) {
+  return (
+    <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-4 ${light ? 'bg-white/10 text-white' : 'bg-primary/10 text-primary'}`}>
+      <Icon className="w-4 h-4" /> {children}
+    </div>
+  );
+}
+
+function BranchHero() {
+  return (
+    <section className="relative bg-gradient-to-b from-slate-50 to-white pt-10 pb-24 lg:pt-14 lg:pb-32 overflow-hidden" data-testid="branch-hero">
+      <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="container-main relative">
+        <nav className="text-sm text-gray-500 mb-8 flex items-center gap-1" aria-label="Breadcrumb">
+          <Link href="/" className="hover:text-primary" data-testid="branch-breadcrumb-home">Home</Link>
+          <ChevronRight className="w-4 h-4" />
+          <span className="text-gray-900 font-medium">Pathankot Branch</span>
+        </nav>
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="animate-fade-in">
+            <SectionLabel icon={Building2}>ISO 9001:2015 Certified · MSME Registered · Since 2017</SectionLabel>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              Best Computer Institute in <span className="text-primary">Pathankot</span>
             </h1>
-            <p className="text-xl text-blue-100 mb-2 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg text-gray-600 mb-8 leading-relaxed max-w-xl">
               ETI Educom — Punjab&apos;s #1 Computer Career School delivering certified training in
-              <strong className="text-white"> Python, Tally, Digital Marketing, Web Development, Cybersecurity</strong>,
+              <strong className="text-gray-900"> Python, Tally, Digital Marketing, Web Development, Cybersecurity</strong>,
               and more — with 100% placement assistance.
             </p>
-            <p className="text-base text-blue-200 mb-8">5000+ students trained · 95% placement rate · 40+ certifications · 4.8/5 rating on Justdial</p>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-              {stats.map((stat, index) => {
-                const Icon = stat.icon;
-                return (
-                  <div key={index} className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
-                    <Icon className="w-8 h-8 text-yellow-400 mx-auto mb-2" />
-                    <p className="text-2xl font-bold text-white">{stat.value}</p>
-                    <p className="text-xs text-blue-100">{stat.label}</p>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/free-counselling" className="inline-flex items-center justify-center gap-2 bg-white text-primary px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition-colors">
-                Book Free Counselling
-                <ChevronRight className="w-5 h-5" />
+            <div className="flex flex-col sm:flex-row gap-4 mb-10">
+              <Link href="/free-counselling" className="btn-primary justify-center px-8 py-4" data-testid="branch-hero-counselling-btn">
+                Book Free Counselling <ChevronRight className="w-5 h-5" />
               </Link>
-              <a href={`tel:${branchInfo.phone}`} className="inline-flex items-center justify-center gap-2 border-2 border-white/30 text-white px-8 py-4 rounded-xl hover:bg-white/10 transition-colors">
+              <a href={`tel:${branchInfo.phone}`} className="btn-secondary justify-center px-8 py-4" data-testid="branch-hero-call-btn">
                 <Phone className="w-4 h-4" /> Call 9646727676
               </a>
             </div>
+            <div className="grid sm:grid-cols-2 gap-4 text-sm">
+              <div className="flex items-start gap-3"><MapPin className="w-5 h-5 text-primary flex-shrink-0" /><span className="text-gray-700">{branchInfo.address}</span></div>
+              <div className="flex items-start gap-3"><Clock className="w-5 h-5 text-primary flex-shrink-0" /><span className="text-gray-700">{branchInfo.timings}</span></div>
+            </div>
+          </div>
+          <div className="relative">
+            <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl">
+              <Image src="/images/branch-campus.jpg" alt="ETI Educom Pathankot campus and computer lab" fill priority sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+            </div>
+            <div className="absolute -bottom-8 -left-4 sm:-left-8 bg-white rounded-2xl shadow-xl p-5 border border-gray-100" data-testid="branch-rating-card">
+              <div className="flex gap-1 mb-1">{[0, 1, 2, 3, 4].map((i) => <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />)}</div>
+              <p className="font-bold text-gray-900">4.8/5 on Justdial</p>
+              <p className="text-xs text-gray-500">Loved by 5000+ students</p>
+            </div>
+            <div className="hidden sm:flex absolute -top-6 -right-4 bg-gray-900 text-white rounded-2xl shadow-xl px-5 py-4 items-center gap-3">
+              <Award className="w-6 h-6 text-yellow-400" />
+              <div>
+                <p className="font-bold text-sm">Certiport CATC</p>
+                <p className="text-xs text-gray-400">Authorized test centre</p>
+              </div>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
+  );
+}
 
-      {/* Intro / About Pathankot Center */}
-      <section className="py-16 lg:py-20 bg-white">
-        <div className="container-main max-w-4xl">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-            Top-Rated Computer Institute in Pathankot Since 2017
-          </h2>
-          <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed space-y-4">
+function StatsStrip() {
+  return (
+    <section className="container-main -mt-10 relative z-10" data-testid="branch-stats">
+      <div className="grid grid-cols-2 md:grid-cols-4 rounded-3xl bg-primary text-white overflow-hidden shadow-xl">
+        {stats.map(({ icon: Icon, value, label }, i) => (
+          <div key={label} className={`p-6 md:p-8 flex items-center gap-4 hover:bg-primary-dark transition-colors ${i > 0 ? 'md:border-l border-white/15' : ''}`}>
+            <Icon className="w-8 h-8 text-yellow-300 flex-shrink-0" />
+            <div>
+              <p className="text-2xl md:text-3xl font-bold">{value}</p>
+              <p className="text-xs md:text-sm text-blue-100">{label}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function IntroSection() {
+  return (
+    <section className="py-20 lg:py-24 bg-white">
+      <div className="container-main grid lg:grid-cols-[1.4fr_1fr] gap-12 items-start">
+        <div>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Top-Rated Computer Institute in Pathankot Since 2017</h2>
+          <div className="text-gray-700 leading-relaxed space-y-4 text-lg">
             <p>
               Looking for the <strong>best computer institute in Pathankot</strong>? ETI Educom is a
               Punjab-based computer career school dedicated to bridging the gap between academic
@@ -339,330 +387,240 @@ export default function PathankotBranchPage() {
             </p>
           </div>
         </div>
-      </section>
+        <div className="lg:sticky lg:top-28 rounded-3xl bg-gray-900 text-white p-8" data-testid="branch-highlights-card">
+          <SectionLabel icon={ThumbsUp} light>Why students choose us</SectionLabel>
+          <ul className="space-y-4">
+            {highlights.map((item) => (
+              <li key={item} className="flex items-start gap-3">
+                <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                <span className="text-gray-200">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
 
-      {/* Most-Searched Courses in Pathankot */}
-      <section className="py-16 lg:py-20 bg-gray-50">
-        <div className="container-main">
-          <div className="text-center mb-12 max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
-              <Target className="w-4 h-4" /> Most Popular in Pathankot
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Top Computer Courses in Pathankot
-            </h2>
-            <p className="text-gray-600 text-lg">
-              From Python and Tally to Digital Marketing — explore the most enrolled courses at our Pathankot center.
-            </p>
+function CoursesSection() {
+  return (
+    <section className="py-20 lg:py-24 bg-slate-50">
+      <div className="container-main">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+          <div className="max-w-2xl">
+            <SectionLabel icon={Target}>Most Popular in Pathankot</SectionLabel>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Top Computer Courses in Pathankot</h2>
+            <p className="text-gray-600 text-lg">From Python and Tally to Digital Marketing — explore the most enrolled courses at our Pathankot center.</p>
           </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {popularCoursesPathankot.map((course, idx) => {
-              const Icon = course.icon;
-              return (
-                <Link
-                  key={idx}
-                  href={`/programs/${course.slug}`}
-                  className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-primary hover:shadow-xl transition-all"
-                  data-testid={`course-card-${course.slug}`}
-                >
-                  <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary-dark rounded-xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform shadow-md">
+          <Link href="/programs" className="btn-secondary self-start md:self-auto" data-testid="branch-all-courses-btn">
+            View All 50+ Courses <ChevronRight className="w-4 h-4" />
+          </Link>
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {popularCoursesPathankot.map((course) => {
+            const Icon = course.icon;
+            return (
+              <Link key={course.slug} href={`/programs/${course.slug}`} className="group bg-white rounded-3xl p-7 border border-gray-100 hover:border-primary/40 hover:shadow-xl hover:-translate-y-1 transition-[transform,box-shadow,border-color] duration-300" data-testid={`course-card-${course.slug}`}>
+                <div className="flex items-center justify-between mb-5">
+                  <div className="w-12 h-12 bg-primary/10 text-primary rounded-2xl flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
                     <Icon className="w-6 h-6" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
-                    {course.name}
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-4 line-clamp-3">{course.desc}</p>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500 flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5" /> {course.duration}
-                    </span>
-                    <span className="text-primary font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
-                      View Details <ChevronRight className="w-4 h-4" />
-                    </span>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-
-          <div className="text-center mt-10">
-            <Link href="/programs" className="btn-primary inline-flex items-center gap-2">
-              View All 50+ Courses <ChevronRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Summer Training & Industrial Training Section */}
-      <section className="py-16 lg:py-20 bg-white">
-        <div className="container-main max-w-5xl">
-          <div className="grid md:grid-cols-2 gap-8">
-            <Link href="/summer-training" className="group bg-gradient-to-br from-orange-50 to-yellow-50 rounded-3xl p-8 border border-orange-100 hover:shadow-xl transition-all" data-testid="summer-training-link">
-              <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-yellow-500 rounded-2xl flex items-center justify-center text-white mb-4">
-                <Sparkles className="w-7 h-7" />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-orange-600 transition-colors">
-                Summer Training in Pathankot
-              </h2>
-              <p className="text-gray-700 mb-4 leading-relaxed">
-                4-6 week summer training programs for B.Tech, BCA, MCA, and B.Sc students from
-                Pathankot, Gurdaspur, Dalhousie, and Jammu region. Choose Python, Java, Web Development,
-                Data Analytics, Digital Marketing, AI, or Cybersecurity. Live projects, certificates &
-                internship opportunities included.
-              </p>
-              <span className="inline-flex items-center gap-2 text-orange-600 font-semibold group-hover:gap-3 transition-all">
-                Apply for Summer Training <ChevronRight className="w-4 h-4" />
-              </span>
-            </Link>
-
-            <Link href="/industrial-training" className="group bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl p-8 border border-blue-100 hover:shadow-xl transition-all" data-testid="industrial-training-link">
-              <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center text-white mb-4">
-                <Briefcase className="w-7 h-7" />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
-                Industrial Training in Pathankot
-              </h2>
-              <p className="text-gray-700 mb-4 leading-relaxed">
-                6-month industrial training programs for engineering and CS students. PTU, GNDU, and
-                IK Gujral PTU approved curriculum with hands-on real-world projects, mentorship from
-                industry professionals, and final-year project support. Perfect for placement preparation.
-              </p>
-              <span className="inline-flex items-center gap-2 text-blue-600 font-semibold group-hover:gap-3 transition-all">
-                Explore Industrial Training <ChevronRight className="w-4 h-4" />
-              </span>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact & Location */}
-      <section className="py-20 bg-gray-50">
-        <div className="container-main">
-          <div className="grid lg:grid-cols-2 gap-12 items-start">
-            <div>
-              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
-                <MapPin className="w-4 h-4" /> Visit Our Pathankot Center
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                Computer Institute Near You in Pathankot
-              </h2>
-              <p className="text-gray-600 text-lg mb-8">
-                ETI Educom Pathankot is centrally located on Dhangu Road, easily accessible from
-                Sukhdev Nagar, Bhatia Chowk, Salwa Pul, and all surrounding areas. Walk in for a
-                free campus tour and counselling session.
-              </p>
-
-              <div className="space-y-5 mb-8">
-                <ContactRow icon={MapPin} label="Address" value={branchInfo.address} />
-                <ContactRow icon={Phone} label="Phone" value={branchInfo.phone} href={`tel:${branchInfo.phone}`} />
-                <ContactRow icon={Mail} label="Email" value={branchInfo.email} href={`mailto:${branchInfo.email}`} />
-                <ContactRow icon={Clock} label="Timings" value={branchInfo.timings} />
-              </div>
-
-              <a href={`https://www.google.com/maps/dir/?api=1&destination=${branchInfo.geo.lat},${branchInfo.geo.lng}&destination_place_id=ETI+Educom+Pathankot`} target="_blank" rel="noopener noreferrer" className="btn-primary inline-flex items-center gap-2">
-                <Navigation className="w-4 h-4" /> Get Directions
-              </a>
-            </div>
-
-            <div className="rounded-2xl overflow-hidden shadow-xl h-[500px]">
-              <iframe
-                src={branchInfo.mapUrl}
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="ETI Educom Pathankot - Best Computer Institute Location"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Facilities */}
-      <section className="py-20 bg-white">
-        <div className="container-main">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
-              <Building2 className="w-4 h-4" /> Our Facilities
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              State-of-the-Art Infrastructure in Pathankot
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Modern labs, certified faculty, and student-first amenities — everything you need to learn and grow.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {facilities.map((facility, index) => {
-              const Icon = facility.icon;
-              return (
-                <div key={index} className="bg-white rounded-2xl p-6 text-center hover:shadow-xl transition-all border border-gray-100">
-                  <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-4 text-primary mx-auto">
-                    <Icon className="w-6 h-6" />
-                  </div>
-                  <h3 className="font-bold text-gray-900 mb-2">{facility.title}</h3>
-                  <p className="text-sm text-gray-600">{facility.desc}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Why Choose Us */}
-      <section className="py-20 bg-primary">
-        <div className="container-main">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
-                <ThumbsUp className="w-4 h-4" /> Why Choose Us
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-                Why ETI Educom is the Best Computer Institute in Pathankot
-              </h2>
-              <p className="text-blue-100 mb-8 text-lg leading-relaxed">
-                We&apos;re not just another computer training institute in Pathankot — we&apos;re a
-                career transformation center that has helped thousands of students from Punjab,
-                Himachal Pradesh, and Jammu region achieve their career dreams since 2017.
-              </p>
-
-              <div className="grid sm:grid-cols-2 gap-4">
-                {highlights.map((item, index) => (
-                  <div key={index} className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <CheckCircle className="w-4 h-4 text-primary" />
-                    </div>
-                    <span className="text-white">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="bg-white rounded-3xl p-8 lg:p-10">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Trending Programs This Month</h3>
-              <div className="space-y-4">
-                {popularCoursesPathankot.slice(0, 4).map((course, index) => (
-                  <Link key={index} href={`/programs/${course.slug}`} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-primary/5 transition-colors group">
-                    <div>
-                      <h4 className="font-semibold text-gray-900 group-hover:text-primary">{course.name}</h4>
-                      <p className="text-sm text-gray-500">{course.duration}</p>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-primary group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                ))}
-              </div>
-
-              <Link href="/programs" className="block mt-6">
-                <button className="btn-primary w-full justify-center">
-                  View All Computer Courses in Pathankot <ChevronRight className="w-4 h-4" />
-                </button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="py-20 bg-white">
-        <div className="container-main max-w-4xl">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
-              <BookOpen className="w-4 h-4" /> Frequently Asked Questions
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Common Questions About Computer Courses in Pathankot
-            </h2>
-            <p className="text-gray-600">
-              Got questions? We&apos;ve answered the most common queries from students across Pathankot, Gurdaspur, and Jammu region.
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            {faqs.map((faq, idx) => (
-              <details key={idx} className="group bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden">
-                <summary className="cursor-pointer list-none p-5 flex items-center justify-between gap-4 hover:bg-gray-100 transition-colors">
-                  <h3 className="font-semibold text-gray-900 text-lg">{faq.q}</h3>
-                  <span className="flex-shrink-0 w-8 h-8 bg-primary/10 text-primary rounded-full flex items-center justify-center group-open:rotate-180 transition-transform">
-                    <ChevronRight className="w-4 h-4 rotate-90" />
+                  <span className="text-xs font-medium text-gray-600 bg-gray-100 px-3 py-1 rounded-full flex items-center gap-1">
+                    <Clock className="w-3 h-3" /> {course.duration}
                   </span>
-                </summary>
-                <div className="px-5 pb-5 text-gray-700 leading-relaxed">{faq.a}</div>
-              </details>
-            ))}
-          </div>
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">{course.name}</h3>
+                <p className="text-sm text-gray-600 mb-5 line-clamp-3">{course.desc}</p>
+                <span className="text-primary text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-[gap]">
+                  View Details <ChevronRight className="w-4 h-4" />
+                </span>
+              </Link>
+            );
+          })}
         </div>
-      </section>
+      </div>
+    </section>
+  );
+}
 
-      {/* Service Areas */}
-      <section className="py-16 bg-gray-50">
-        <div className="container-main max-w-5xl">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
-              Serving Students Across the Region
-            </h2>
-            <p className="text-gray-600">
-              ETI Educom Pathankot welcomes students from these surrounding areas:
+function TrainingSection() {
+  const cards = [
+    { href: '/summer-training', testId: 'summer-training-link', icon: Sparkles, title: 'Summer Training in Pathankot', cta: 'Apply for Summer Training', text: '4-6 week summer training programs for B.Tech, BCA, MCA, and B.Sc students from Pathankot, Gurdaspur, Dalhousie, and Jammu region. Choose Python, Java, Web Development, Data Analytics, Digital Marketing, AI, or Cybersecurity. Live projects, certificates & internship opportunities included.' },
+    { href: '/industrial-training', testId: 'industrial-training-link', icon: Briefcase, title: 'Industrial Training in Pathankot', cta: 'Explore Industrial Training', text: '6-month industrial training programs for engineering and CS students. PTU, GNDU, and IK Gujral PTU approved curriculum with hands-on real-world projects, mentorship from industry professionals, and final-year project support. Perfect for placement preparation.' },
+  ];
+  return (
+    <section className="py-20 lg:py-24 bg-white">
+      <div className="container-main grid md:grid-cols-2 gap-6">
+        {cards.map(({ href, testId, icon: Icon, title, cta, text }, i) => (
+          <Link key={href} href={href} className={`group rounded-3xl p-8 lg:p-10 transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-2xl ${i === 0 ? 'bg-gray-900 text-white' : 'bg-primary text-white'}`} data-testid={testId}>
+            <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center mb-6">
+              <Icon className="w-7 h-7 text-yellow-300" />
+            </div>
+            <h2 className="text-2xl font-bold mb-3">{title}</h2>
+            <p className="text-white/75 mb-6 leading-relaxed">{text}</p>
+            <span className="inline-flex items-center gap-2 font-semibold group-hover:gap-3 transition-[gap]">
+              {cta} <ChevronRight className="w-4 h-4" />
+            </span>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function FacilitiesSection() {
+  return (
+    <section className="py-20 lg:py-24 bg-slate-50">
+      <div className="container-main">
+        <div className="text-center mb-14 max-w-2xl mx-auto">
+          <SectionLabel icon={Building2}>Our Facilities</SectionLabel>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">State-of-the-Art Infrastructure in Pathankot</h2>
+          <p className="text-gray-600">Modern labs, certified faculty, and student-first amenities — everything you need to learn and grow.</p>
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {facilities.map(({ icon: Icon, title, desc }) => (
+            <div key={title} className="bg-white rounded-3xl p-7 border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-[transform,box-shadow] duration-300">
+              <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mb-5 text-primary">
+                <Icon className="w-6 h-6" />
+              </div>
+              <h3 className="font-bold text-gray-900 mb-2">{title}</h3>
+              <p className="text-sm text-gray-600">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function LocationSection() {
+  return (
+    <section className="py-20 lg:py-24 bg-white" data-testid="branch-location">
+      <div className="container-main">
+        <div className="rounded-[2rem] border border-gray-100 shadow-xl overflow-hidden grid lg:grid-cols-[1fr_1.2fr]">
+          <div className="p-8 lg:p-12">
+            <SectionLabel icon={MapPin}>Visit Our Pathankot Center</SectionLabel>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Computer Institute Near You in Pathankot</h2>
+            <p className="text-gray-600 mb-8">
+              ETI Educom Pathankot is centrally located on Dhangu Road, easily accessible from
+              Sukhdev Nagar, Bhatia Chowk, Salwa Pul, and all surrounding areas. Walk in for a
+              free campus tour and counselling session.
             </p>
-          </div>
-          <div className="flex flex-wrap justify-center gap-3">
-            {[
-              'Pathankot City', 'Sukhdev Nagar', 'Dhangu Road', 'Jodhamal Colony',
-              'Bhoa', 'Sujanpur', 'Dinanagar', 'Gurdaspur', 'Batala', 'Amritsar',
-              'Dalhousie', 'Banikhet', 'Chamba', 'Nurpur', 'Kathua', 'Samba',
-              'Jammu', 'Udhampur',
-            ].map((area, i) => (
-              <span key={i} className="px-4 py-2 bg-white border border-gray-200 rounded-full text-sm text-gray-700 hover:border-primary hover:text-primary transition-colors">
-                {area}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-white">
-        <div className="container-main text-center max-w-3xl">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Ready to Join the Best Computer Institute in Pathankot?
-          </h2>
-          <p className="text-gray-600 mb-8 text-lg leading-relaxed">
-            Visit our Pathankot center for a free career counselling session. Talk to our experts,
-            tour the facility, and discover the right computer course for your career goals.
-            Walk-ins welcome Monday to Saturday, 9 AM to 7 PM.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/free-counselling" className="btn-primary px-8 py-4 text-lg justify-center">
-              Book Free Counselling
-            </Link>
-            <a href={`tel:${branchInfo.phone}`} className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg border-2 border-primary text-primary hover:bg-primary hover:text-white rounded-xl transition-colors">
-              <Phone className="w-5 h-5" /> Call {branchInfo.phone}
+            <div className="space-y-5 mb-8">
+              <ContactRow icon={MapPin} label="Address" value={branchInfo.address} />
+              <ContactRow icon={Phone} label="Phone" value={branchInfo.phone} href={`tel:${branchInfo.phone}`} />
+              <ContactRow icon={Mail} label="Email" value={branchInfo.email} href={`mailto:${branchInfo.email}`} />
+              <ContactRow icon={Clock} label="Timings" value={branchInfo.timings} />
+            </div>
+            <a href={`https://www.google.com/maps/dir/?api=1&destination=${branchInfo.geo.lat},${branchInfo.geo.lng}&destination_place_id=ETI+Educom+Pathankot`} target="_blank" rel="noopener noreferrer" className="btn-primary inline-flex items-center gap-2" data-testid="branch-directions-btn">
+              <Navigation className="w-4 h-4" /> Get Directions
             </a>
           </div>
+          <div className="min-h-[400px] bg-gray-100">
+            <iframe
+              src={branchInfo.mapUrl}
+              width="100%"
+              height="100%"
+              style={{ border: 0, minHeight: 400 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="ETI Educom Pathankot - Best Computer Institute Location"
+            />
+          </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
+  );
+}
+
+function FaqSection() {
+  return (
+    <section className="py-20 lg:py-24 bg-slate-50">
+      <div className="container-main grid lg:grid-cols-[1fr_1.6fr] gap-12">
+        <div>
+          <SectionLabel icon={BookOpen}>Frequently Asked Questions</SectionLabel>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Common Questions About Computer Courses in Pathankot</h2>
+          <p className="text-gray-600 mb-6">Got questions? We&apos;ve answered the most common queries from students across Pathankot, Gurdaspur, and Jammu region.</p>
+          <Link href="/free-counselling" className="btn-primary" data-testid="branch-faq-counselling-btn">Ask a Counsellor <ChevronRight className="w-4 h-4" /></Link>
+        </div>
+        <div className="space-y-3">
+          {faqs.map((faq, idx) => (
+            <details key={faq.q} className="group bg-white rounded-2xl border border-gray-200 open:shadow-md transition-shadow" data-testid={`branch-faq-item-${idx}`}>
+              <summary className="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
+                <h3 className="font-semibold text-gray-900">{faq.q}</h3>
+                <span className="flex-shrink-0 w-8 h-8 bg-primary/10 text-primary rounded-full flex items-center justify-center group-open:rotate-90 transition-transform">
+                  <ChevronRight className="w-4 h-4" />
+                </span>
+              </summary>
+              <div className="px-5 pb-5 text-gray-700 leading-relaxed">{faq.a}</div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ServiceAreas() {
+  const areas = [
+    'Pathankot City', 'Sukhdev Nagar', 'Dhangu Road', 'Jodhamal Colony',
+    'Bhoa', 'Sujanpur', 'Dinanagar', 'Gurdaspur', 'Batala', 'Amritsar',
+    'Dalhousie', 'Banikhet', 'Chamba', 'Nurpur', 'Kathua', 'Samba',
+    'Jammu', 'Udhampur',
+  ];
+  return (
+    <section className="py-16 bg-white">
+      <div className="container-main max-w-5xl text-center">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">Serving Students Across the Region</h2>
+        <p className="text-gray-600 mb-8">ETI Educom Pathankot welcomes students from these surrounding areas:</p>
+        <div className="flex flex-wrap justify-center gap-3">
+          {areas.map((area) => (
+            <span key={area} className="px-4 py-2 bg-slate-50 border border-gray-200 rounded-full text-sm text-gray-700 hover:border-primary hover:text-primary transition-colors">{area}</span>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function BranchCta() {
+  return (
+    <section className="pb-20 bg-white">
+      <div className="container-main">
+        <div className="rounded-[2rem] bg-gray-900 px-8 py-14 md:px-14 text-center relative overflow-hidden">
+          <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-primary/40 blur-3xl pointer-events-none" />
+          <div className="relative max-w-3xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Ready to Join the Best Computer Institute in Pathankot?</h2>
+            <p className="text-gray-300 mb-8 text-lg leading-relaxed">
+              Visit our Pathankot center for a free career counselling session. Talk to our experts,
+              tour the facility, and discover the right computer course for your career goals.
+              Walk-ins welcome Monday to Saturday, 9 AM to 7 PM.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/free-counselling" className="btn-primary px-8 py-4 text-lg justify-center" data-testid="branch-cta-counselling-btn">Book Free Counselling</Link>
+              <a href={`tel:${branchInfo.phone}`} className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg border-2 border-white/30 text-white hover:bg-white/10 rounded-xl transition-colors" data-testid="branch-cta-call-btn">
+                <Phone className="w-5 h-5" /> Call {branchInfo.phone}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
 function ContactRow({ icon: Icon, label, value, href }) {
-  const inner = (
-    <>
-      <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary flex-shrink-0">
-        <Icon className="w-6 h-6" />
+  return (
+    <div className="flex items-start gap-4">
+      <div className="w-11 h-11 bg-primary/10 rounded-xl flex items-center justify-center text-primary flex-shrink-0">
+        <Icon className="w-5 h-5" />
       </div>
       <div>
-        <h4 className="font-semibold text-gray-900">{label}</h4>
-        {href ? (
-          <a href={href} className="text-primary hover:underline">{value}</a>
-        ) : (
-          <p className="text-gray-600">{value}</p>
-        )}
+        <h4 className="font-semibold text-gray-900 text-sm">{label}</h4>
+        {href ? <a href={href} className="text-primary hover:underline">{value}</a> : <p className="text-gray-600">{value}</p>}
       </div>
-    </>
+    </div>
   );
-  return <div className="flex items-start gap-4">{inner}</div>;
 }

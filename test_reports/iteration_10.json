@@ -1,0 +1,43 @@
+{
+  "summary": "Frontend-only test of the round 2 UI changes: home About section, home footer without the address, the /free-counselling redesign and the /best-institute-in-pathankot redesign, at 1920px and 390px. Almost everything passes. One real bug: the Google Maps embed on the branch page is broken (Google returns 400 'Invalid pb parameter') and shows an empty grey box.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Branch page location map", "issue": "The iframe src https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3393.8!2d75.640!3d32.264... is rejected by Google ('Google Maps Platform rejected your request. Invalid request. Invalid pb parameter.'). The response is HTTP 400, which logs a console error, and the map area is an empty grey box. Suggested fix: src={`https://maps.google.com/maps?q=${branchInfo.geo.lat},${branchInfo.geo.lng}&z=16&output=embed`} or use a real pb string from Google Maps > Share > Embed.", "selector": "[data-testid='branch-location'] iframe", "priority": "HIGH"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Home About image collage", "issues": ["The 'Since 2017' badge (about-since-badge, absolute -bottom-8 left) covers the start of the image caption 'Live, hands-on lab sessions every day'. Only '...sions every day' is visible on desktop. Move the caption to the right (for example pl-40 or right-aligned) or move the badge."]},
+      {"screen": "/free-counselling header", "issues": ["The LandingHeader logo is very small (about 16px tall) and looks weak next to the large call button. Make it larger, around h-10."]},
+      {"screen": "/free-counselling mobile (390px)", "issues": ["The form card comes after the headline, the paragraph and 3 bullets, so it sits roughly 770px down and is not visible on first load. Think about placing the form directly after the headline on mobile, or adding a sticky 'Book free session' button."]},
+      {"screen": "Header logo (site-wide)", "issues": ["Next/Image warning: /images/logo-blue.png has its width or height changed in CSS but not the other. Add style width:auto or height:auto."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Fix the broken Google Maps embed src in app/(site)/best-institute-in-pathankot/page.js (invalid pb parameter, returns 400)",
+    "Stop the 'Since 2017' badge from covering the 'Live, hands-on lab sessions' caption in AboutPreviewSection",
+    "Optional: make the logo larger in the free-counselling header, and move the form higher on mobile"
+  ],
+  "critical_code_review_comments": [
+    "FreeCounsellingForm: the 'submitted' state and its success view are never used, because the form always redirects. This is dead code.",
+    "Final CTA href='#top' targets the form (id='top'). It works (scrolls to the form), but the name 'top' is misleading. Rename it to something like id='counselling-form'."
+  ],
+  "verified_passing": [
+    "Home About section: no 'Watch Our Story' text and no video or iframe. It has the image collage (both images load), the 'Since 2017' badge, 4 pillar cards and the numbers strip.",
+    "about-learn-more-btn goes to /about and about-founder-btn goes to /founder",
+    "Home footer: footer-head-office is absent and 'Jodhamal' does not appear anywhere on the home page. footer-phone and footer-email are shown in 2 columns.",
+    "/about and /contact still show footer-head-office with the Jodhamal Colony address",
+    "/free-counselling: the header, call button (tel:+919646727676), hero, form card, credentials bar, how-it-works, coverage, partner logos, testimonials, FAQ (opens on click) and final CTA are all present. All 12 images load.",
+    "Counselling form: POST /api/counselling-leads returned 200 and the page redirected to /thank-you?source=counselling&name=TEST_Counsel",
+    "Branch page: hero image, stats strip, highlights card, 6 course cards (course-card-python goes to /programs/python), summer and industrial training links, a correct Get Directions URL, the FAQ accordion and the CTA all work. No broken images.",
+    "No horizontal overflow at 390px on any of the 3 pages",
+    "No hydration errors. The hydration warnings seen in one run came from the test script itself changing img.loading, and a clean rerun had none."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "93%"},
+  "seed_data_creation": "Created 1 counselling lead through the UI: name TEST_Counsel, phone 9876543210. It was not deleted.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Use domcontentloaded plus a wait for a data-testid. Check the map iframe content using frame_locator. Do not change img attributes before hydration, because that causes false hydration warnings."
+}

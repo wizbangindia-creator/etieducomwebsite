@@ -48,3 +48,11 @@
 - Rate limiter `client_ip()`: uses X-Real-IP, else the last X-Forwarded-For entry, so spoofing the header doesn't bypass it.
 - `backend/reset_admin.py`: resets the admin password to ADMIN_PASSWORD from .env and clears 2FA (for the live server).
 - Tested: iteration_7 and iteration_8 (all pass); the XFF fix was verified with curl.
+
+## Update — Nov 2026 (Round 2 UI changes)
+- Home About section: the video placeholder is gone. It now has an image collage, a Since 2017 badge, 4 credential pillar cards and a numbers strip.
+- Home page footer: the Head Office address is hidden on `/` only (`components/FooterContactBar.jsx`). Other pages still show it.
+- /free-counselling: fully redesigned (professional, trust-focused). Hype and urgency copy removed. Adds a credentials bar, 3-step process, session coverage, partner logos, testimonials, FAQ and a mobile CTA. The form logic is unchanged.
+- /best-institute-in-pathankot: redesigned layout with a hero image, stats strip, highlights card, new course/training/location/FAQ sections. SEO schema and copy are kept. Fixed the broken Google Maps embed.
+- New images in /public/images: about-students-lab, about-certification, counselling-session, branch-campus, logo-blue-cropped.
+- Tested: iteration_10 (all pass, and the map + minor design notes are fixed).

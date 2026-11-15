@@ -15,6 +15,7 @@ import {
   Award,
   BadgeCheck
 } from 'lucide-react';
+import FooterContactBar from '@/components/FooterContactBar';
 
 const SOCIAL_LINKS = {
   facebook: 'https://www.facebook.com/etieducom',
@@ -193,35 +194,7 @@ export default function Footer() {
         </div>
 
         {/* Contact Info Bar */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-8 border-b border-gray-700">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center">
-              <Phone className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <p className="text-xs text-gray-500 mb-1">Call Us</p>
-              <p className="text-white font-medium">{CONTACT_INFO.phone}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center">
-              <Mail className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <p className="text-xs text-gray-500 mb-1">Email Us</p>
-              <p className="text-white font-medium">{CONTACT_INFO.email}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center">
-              <MapPin className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <p className="text-xs text-gray-500 mb-1">Head Office</p>
-              <p className="text-white font-medium text-sm">{CONTACT_INFO.address}</p>
-            </div>
-          </div>
-        </div>
+        <FooterContactBar phone={CONTACT_INFO.phone} email={CONTACT_INFO.email} address={CONTACT_INFO.address} />
 
         {/* Certifications Bar */}
         <div className="py-6 border-b border-gray-700">
