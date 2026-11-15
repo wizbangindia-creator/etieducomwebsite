@@ -1,0 +1,29 @@
+{
+  "summary": "Frontend-only test of the round 3 home page changes (desktop 1920 and mobile 390). Passing: Programs carousel has 12 cards, each with Offline tag, Duration, Best For, Admissions Open and View Program linking to /programs/<slug> (all 12 routes return 200). All 12 card images load. Filter counts are correct: 4/3/2/2/1/12. Prev/next arrows and dots scroll the track and the active dot updates. Mobile swipe works and arrows are hidden there. 5000+ appears once on the home page, only in AnimatedStatsSection. HeroForm still shows 'Since 2017' and has no 5000+. Learning Journey has 5 steps in a zigzag on desktop and stacked on mobile. The about-preview section is gone, as are the 'First Choice' and 'In-Demand Technology Skills' sections. ETI Advantage has a hero card with a loaded image, Learn More goes to /about, and there are 6 cards. The footer has no Head Office. The hero enquiry returns 200 and redirects to /thank-you. One bug: on desktop the carousel shows an extra, unreachable dot.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "ProgramsCarousel (desktop, All filter)", "issue": "Shows 5 dots, but the track can only scroll 4 pages. scrollWidth=4936, clientWidth=1216, max scrollLeft=3720 (exactly page 3). measure() computes ceil(4936/1216 - 0.05) = ceil(4.009) = 5. As a result, dot 5 (programs-dot-4) can never be active, clicking it does nothing, and the Next button never disables on the last page.", "selector": "[data-testid='programs-dot-4'], [data-testid='programs-next-btn']", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Home mobile - Programs carousel", "issues": ["11 dots for 12 cards at 390px is a lot. Consider capping the count or using a progress bar."]},
+      {"screen": "Home mobile - Learning Journey", "issues": ["When stacked, each number badge (01, 02...) sits below its card, so '01' appears between ENROLL and START ORIENTATION. Putting the badge above the card on mobile would read more naturally."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "ProgramsCarousel.measure(): compute pages from the scrollable distance, e.g. const max = el.scrollWidth - el.clientWidth; pages = max <= 2 ? 1 : Math.ceil(max / el.clientWidth - 0.02) + 1; and set page = el.scrollLeft >= max - 2 ? pages - 1 : Math.round(el.scrollLeft / el.clientWidth). Do the same in go() so the last dot scrolls to max."
+  ],
+  "critical_code_review_comments": [
+    "ProgramsCarousel: the pages formula ignores the trailing gap and card snap, so it miscounts whenever scrollWidth/clientWidth is just above an integer (desktop All filter).",
+    "ProgramsCarousel: measure() runs setState on every scroll event. This is fine at this size, but throttling it with requestAnimationFrame would help.",
+    "page.js still imports many unused lucide icons and Image."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "95%"},
+  "seed_data_creation": "One quick enquiry was created via the UI with name 'TEST_Round3 User', phone 9876543210, interest Data Analytics.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Use wait_until domcontentloaded. Accept the cookie banner via the 'Accept' button. Desktop track: clientWidth 1216 and 3 cards per view. Mobile shows 11 dots. Selectors are data-testid as listed in the review request."
+}

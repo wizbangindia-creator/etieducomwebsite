@@ -126,10 +126,6 @@ export default function HeroForm() {
       
       <div className="flex items-center justify-center gap-4 mt-4 pt-4 border-t border-gray-100">
         <div className="flex items-center gap-1 text-xs text-gray-500">
-          <Users className="w-3 h-3 text-primary" />
-          5000+ Students
-        </div>
-        <div className="flex items-center gap-1 text-xs text-gray-500">
           <Award className="w-3 h-3 text-primary" />
           Since 2017
         </div>

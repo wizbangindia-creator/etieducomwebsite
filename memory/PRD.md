@@ -56,3 +56,10 @@
 - /best-institute-in-pathankot: redesigned layout with a hero image, stats strip, highlights card, new course/training/location/FAQ sections. SEO schema and copy are kept. Fixed the broken Google Maps embed.
 - New images in /public/images: about-students-lab, about-certification, counselling-session, branch-campus, logo-blue-cropped.
 - Tested: iteration_10 (all pass, and the map + minor design notes are fixed).
+
+## Update — Nov 2026 (Round 3 home page)
+- New `components/ProgramsCarousel.jsx` (IIDE-style photo cards, 12 programs, filter pills, arrows/dots on desktop, progress bar on mobile) replaces the Career Tracks + In-Demand Skills sections. Photos are in /public/images/programs/<slug>.jpg.
+- New `components/LearningJourney.jsx`: 5-step NIIT-style zigzag (Enroll → Orientation → Learn → Practice → Get Hired*).
+- New `components/EtiAdvantage.jsx` replaces the About section and the old "Why Choose Us" (6 advantages + image hero card).
+- The 5000+ stat now appears only once on home (AnimatedStatsSection). Removed from the hero trust row and the HeroForm.
+- Tested: iteration_11 (all pass). The carousel dot-count bug was fixed afterwards and verified.
