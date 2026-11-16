@@ -214,6 +214,19 @@ body.has-announcement .main-content {
 .animate-float { animation: float 4s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .animate-float { animation: none; } }
 
+/* Custom blog HTML: browser-like defaults with zero specificity so pasted CSS always wins */
+.blog-custom-html :where(h1) { font-size: 2em; font-weight: 700; margin: 0.67em 0; }
+.blog-custom-html :where(h2) { font-size: 1.5em; font-weight: 700; margin: 0.83em 0; }
+.blog-custom-html :where(h3) { font-size: 1.17em; font-weight: 700; margin: 1em 0; }
+.blog-custom-html :where(h4, h5, h6) { font-weight: 700; margin: 1.33em 0; }
+.blog-custom-html :where(p, blockquote, figure, pre, table, dl) { margin: 1em 0; }
+.blog-custom-html :where(ul) { list-style: disc; padding-left: 40px; margin: 1em 0; }
+.blog-custom-html :where(ol) { list-style: decimal; padding-left: 40px; margin: 1em 0; }
+.blog-custom-html :where(a) { color: #1545ea; text-decoration: underline; }
+.blog-custom-html :where(img, video, iframe) { max-width: 100%; height: auto; }
+.blog-custom-html :where(table) { border-collapse: collapse; }
+
+
 
 /* Infinite marquee (pauses on hover) */
 .marquee {

@@ -1,0 +1,39 @@
+{
+  "summary": "Round 6 testing. Everything requested works. (1) Blog HTML/CSS is kept as pasted. On POST and PUT the <style> block is saved unescaped (no &gt;), inline styles, custom classes and the https Google Fonts stylesheet link are kept, while script tags, on* handlers, javascript: hrefs and the http stylesheet link are removed. /blogs/<slug> renders with class 'blog-custom-html' and the computed styles match: p colour rgb(200,0,0), padding 24px, the linear-gradient and the Poppins font. The plain blog still uses the prose classes. The admin editor preview also switches between blog-custom-html and prose (tested by injecting a session with a JWT signed using JWT_SECRET). (2) Backend phone validation: 9 invalid cases return 422 (numbers starting 0/1/5, 9 or 11 digits, +91/91 prefix, letters, empty), and '90000 00000' is accepted and saved as 9000000000. (3) Frontend phone field: digits only, max 10, the error shows as soon as the first digit is 1-5 and when blurring with too few digits, an invalid submit is blocked with the error and a toast (0 POSTs sent), and a valid submit redirects to /thank-you. (4) The MSG91 etiweb message was confirmed twice by the log line 'Counselling WhatsApp (etiweb) to ****0000: 200 {status: success, hasError: false}'. The API responded in 0.16s, so the send does not delay the response. Exactly 2 real WhatsApp sends were made, both to 9000000000. One UX bug and some sanitizer gaps were found (see below).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "sanitize_html (POST/PUT /api/blogs)", "issue": "Two XSS gaps remain because every attribute is kept. 1) <iframe srcdoc=\"<script>alert(1)</script>\"> is kept; srcdoc runs script with the site's own origin. 2) <svg><a><animate attributeName=href values=\"javascript:alert(1)\"> is kept because 'values' is not in URL_ATTRS. Only admins can write blog content, so the risk is lower, but this is stored XSS on public pages. Fix: drop srcdoc, and drop 'values', 'to' and 'from' on SVG animate/set when they contain javascript:, or block the animate/set tags."},
+      {"endpoint": "create_counselling_lead", "issue": "asyncio.create_task(send_counselling_whatsapp(...)) does not keep a reference to the task, so the task can be garbage-collected before it finishes (a known Python asyncio issue). Keep the tasks in a set at module level. It worked in both tests."},
+      {"endpoint": "/app/backend/tests/test_counselling_r5.py", "issue": "This older regression test posts a lead with a random real-looking 9XXXXXXXXX number. Every run now sends a real WhatsApp message to a stranger. Change it to use 9000000000."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "FreeCounsellingForm phone input", "issue": "Pasting '+91 98765 43210' (or '919876543210') removes non-digits and keeps the first 10 digits, giving '9198765432'. That is a wrong number, yet it passes validation with no error. Remove a leading 91 or 0 when the digit string is longer than 10, before cutting it to 10 digits.", "selector": "[data-testid='counselling-phone-input']", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Blog page with custom HTML", "issues": ["A pasted <style> block applies to the whole page, not just the article. A generic selector such as 'p {}' or 'h2 {}' in a blog will also restyle the site header, footer and related cards. Consider wrapping the CSS in @scope or rewriting selectors to sit under .blog-custom-html. The same happens in the admin panel while the preview is open."]},
+      {"screen": "/free-counselling", "issues": ["The error toast at the top right partly covers the header phone button (minor)."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_round6_blog_html_phone.py", "/app/test_reports/pytest/r6.xml"],
+  "action_items": [
+    "Fix the phone paste issue: remove a leading +91, 91 or 0 before cutting the number to 10 digits in FreeCounsellingForm",
+    "Strip the iframe srcdoc attribute and the javascript: payloads in SVG animate/set (values/to/from) in sanitize_html",
+    "Keep a reference to the WhatsApp asyncio task (in a set at module level)",
+    "Change test_counselling_r5.py to use 9000000000 so tests stop sending WhatsApp messages to real numbers",
+    "Optional: limit the pasted blog CSS to the blog-content container"
+  ],
+  "critical_code_review_comments": [
+    "sanitize_html ignores ALLOWED_ATTRIBUTES and keeps every attribute except on* handlers and dangerous URL values. A denylist like this is fragile (srcdoc and SVG animate get through).",
+    "Each blog create or update by a test sends an IndexNow ping to the search engines; test blogs were cleaned up quickly."
+  ],
+  "updated_files": ["/app/backend/tests/test_round6_blog_html_phone.py"],
+  "success_rate": {"backend": "100% (13/13)", "frontend": "100% of requested flows; 1 extra UX bug (pasted +91 number)"},
+  "seed_data_creation": "Temporary TEST_ blogs (test-r6-*) and 2 TEST_R6 counselling leads (phone 9000000000) were created and deleted by id. Nothing is left over.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Admin token: sign a JWT {sub: admin_users.id} with JWT_SECRET (HS256). For the admin UI, set sessionStorage admin_session='true', admin_device=DEV_<hash> (same hash as generateDeviceId), admin_last_activity and admin_token via an init script. Every valid counselling lead sends a real WhatsApp message, so use only 9000000000. The WhatsApp log line is in /var/log/supervisor/backend.err.log."
+}

@@ -21,7 +21,7 @@ def cleanup():
 # Counselling lead create -> persisted in DB
 def test_create_counselling_lead_persists():
     name = f"TEST_R5_{uuid.uuid4().hex[:6]}"
-    phone = "9" + str(int(time.time() * 1000))[-9:]
+    phone = "9000000000"
     payload = {"name": name, "phone": phone, "education": "Graduate", "preferred_track": "Cybersecurity"}
     r = requests.post(f"{BASE_URL}/api/counselling-leads", json=payload, timeout=20)
     assert r.status_code == 200, r.text

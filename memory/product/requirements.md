@@ -27,3 +27,13 @@ Reference screenshots the user shared (inspiration for the style/layout, use ETI
 ## Round 5 (user's words, verbatim)
 "as we designed the home poge hero section so make the free counselling page also like that"
 - Context: the home page hero built in Round 4 (IIDE-style). Apply that same hero style to the Free Counselling page. The counselling booking form must keep working exactly as before.
+
+## Round 6 (user's words, verbatim)
+"while uploading the blog from the backend when i paste the html code it overrides it and makes it default i want that whatsoever the css is added in the blog html it must be rendered as it is and when someone books the counseling they must immediately recieve a message ontheir whatsapp from msg 91 ill share the tmplate details and must validate the number as 10 digit , starting from either 9 , 8 , 7 or 6"
+
+MSG91 WhatsApp curl the user shared (authkey is stored as backend env MSG91_AUTH_KEY, never hardcode it):
+curl --location --request POST 'https://api.msg91.com/api/v5/whatsapp/whatsapp-outbound-message/bulk/'
+  --header 'Content-Type: application/json' --header 'authkey: <authkey>'
+  --data-raw '{"integrated_number": "918728054145","content_type": "template","payload": {"messaging_product": "whatsapp","type": "template","template": {"name": "etiweb","language": {"code": "en","policy": "deterministic"},"namespace": null,"to_and_components": [{"to": ["<list_of_phone_numbers>"],"components": {"body_1": {"type": "text","value": "value1"}}}]}}}'
+- body_1 value: use the student's name from the booking form for now (awaiting user confirmation; may change).
+- Key is saved as backend env MSG91_AUTH_KEY.

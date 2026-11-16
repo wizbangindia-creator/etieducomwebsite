@@ -10,6 +10,7 @@ import {
   HelpCircle, UserCog, Globe, Layers, Zap, MapPin
 } from 'lucide-react';
 import { toast, Toaster } from 'sonner';
+import { hasCustomStyles, scopeBlogStyles } from '@/lib/blogHtml';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -180,10 +181,10 @@ const HTMLEditor = ({ value, onChange, placeholder }) => {
         </button>
       </div>
       {showPreview ? (
-        <div className="p-4 min-h-[200px] prose max-w-none" dangerouslySetInnerHTML={{ __html: value || '<p class="text-gray-400">No content...</p>' }} />
+        <div className={`p-4 min-h-[200px] max-w-none ${hasCustomStyles(value) ? 'blog-custom-html' : 'prose'}`} data-testid="blog-editor-preview" dangerouslySetInnerHTML={{ __html: (hasCustomStyles(value) ? scopeBlogStyles(value) : value) || '<p class="text-gray-400">No content...</p>' }} />
       ) : (
-        <textarea value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
-          className="w-full p-4 min-h-[200px] font-mono text-sm focus:outline-none resize-y" />
+        <textarea value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} spellCheck={false}
+          className="w-full p-4 min-h-[200px] font-mono text-sm focus:outline-none resize-y" data-testid="blog-content-textarea" />
       )}
     </div>
   );

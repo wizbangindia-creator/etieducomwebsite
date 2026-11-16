@@ -9,13 +9,14 @@ import os
 import logging
 import re
 from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict, EmailStr
+from pydantic import BaseModel, Field, ConfigDict, EmailStr, field_validator
 from typing import List, Optional
 import uuid
 from datetime import datetime, timezone, timedelta
 import bcrypt
 import jwt as pyjwt
 import bleach
+from bs4 import BeautifulSoup
 import pyotp
 import qrcode
 import base64
@@ -154,11 +155,36 @@ ALLOWED_HTML_ATTRS = {
     'video': ['src', 'controls', 'width', 'height'], 'source': ['src', 'type'],
 }
 
+BLOCKED_HTML_TAGS = ['script', 'noscript', 'object', 'embed', 'applet', 'base', 'meta', 'form', 'frame', 'frameset', 'animate', 'set', 'animatetransform', 'animatemotion']
+URL_ATTRS = ('href', 'src', 'action', 'formaction', 'xlink:href', 'poster', 'data')
+
+
 def sanitize_html(html_content: str) -> str:
-    """Sanitize HTML content to prevent XSS attacks"""
+    """Keep admin-pasted HTML/CSS as-is; strip only script vectors."""
     if not html_content:
         return html_content
-    return bleach.clean(html_content, tags=ALLOWED_HTML_TAGS, attributes=ALLOWED_HTML_ATTRS, strip=True)
+    soup = BeautifulSoup(html_content, 'html.parser')
+    for tag in soup.find_all(BLOCKED_HTML_TAGS):
+        tag.decompose()
+    for tag in soup.find_all('link'):
+        if 'stylesheet' not in (tag.get('rel') or []) or not str(tag.get('href', '')).startswith('https://'):
+            tag.decompose()
+    for tag in soup.find_all(['html', 'head', 'body']):
+        tag.unwrap()
+    for tag in soup.find_all(True):
+        for attr in list(tag.attrs):
+            val = tag.attrs[attr]
+            text = ' '.join(val) if isinstance(val, list) else str(val)
+            compact = re.sub(r'[\s\x00-\x1f]', '', text).lower()
+            if (attr.lower().startswith('on') or attr.lower() == 'srcdoc'
+                    or 'javascript:' in compact or 'vbscript:' in compact
+                    or (attr.lower() in URL_ATTRS and compact.startswith('data:text/html'))):
+                del tag.attrs[attr]
+    for style in soup.find_all('style'):
+        css = style.string or ''
+        if re.search(r'expression\s*\(|javascript:|</style', css, re.I):
+            style.string = re.sub(r'expression\s*\(|javascript:', '', css, flags=re.I)
+    return str(soup)
 
 def sanitize_text(text: str) -> str:
     """Strip HTML tags from plain text fields"""
@@ -454,6 +480,44 @@ def queue_crm_lead(lead_id: Optional[str] = None, **kwargs):
     if not kwargs.get("campaign") and attr.get("campaign"):
         kwargs["campaign"] = attr["campaign"]
     asyncio.create_task(_record_lead(lead_id, attr, kwargs))
+
+
+_background_tasks: set = set()
+
+
+async def send_counselling_whatsapp(phone: str, name: str):
+    """Send MSG91 'etiweb' WhatsApp template to a counselling lead."""
+    auth_key = os.environ.get("MSG91_AUTH_KEY")
+    if not auth_key:
+        logging.warning("MSG91_AUTH_KEY not set; skipping counselling WhatsApp")
+        return False
+    payload = {
+        "integrated_number": "918728054145",
+        "content_type": "template",
+        "payload": {
+            "messaging_product": "whatsapp",
+            "type": "template",
+            "template": {
+                "name": "etiweb",
+                "language": {"code": "en", "policy": "deterministic"},
+                "namespace": None,
+                "to_and_components": [{"to": [f"91{phone}"], "components": {"body_1": {"type": "text", "value": name}}}],
+            },
+        },
+    }
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.post(
+                "https://api.msg91.com/api/v5/whatsapp/whatsapp-outbound-message/bulk/",
+                json=payload,
+                headers={"Content-Type": "application/json", "authkey": auth_key},
+            )
+        ok = response.status_code == 200 and '"hasError":true' not in response.text.replace(" ", "")
+        logging.info(f"Counselling WhatsApp (etiweb) to ****{phone[-4:]}: {response.status_code} {response.text[:300]}")
+        return ok
+    except Exception as e:
+        logging.error(f"Counselling WhatsApp failed for ****{phone[-4:]}: {e}")
+        return False
 
 
 async def send_whatsapp_thank_you(phone: str, name: str, form_type: str = "enquiry"):
@@ -2244,9 +2308,14 @@ class CounsellingLead(BaseModel):
 
 class CounsellingLeadCreate(BaseModel):
     name: str = Field(..., min_length=2, max_length=100)
-    phone: str = Field(..., min_length=10)
+    phone: str = Field(..., pattern=r"^[6-9]\d{9}$", description="10-digit Indian mobile starting with 6-9")
     education: str = Field(..., min_length=2)
     preferred_track: str = Field(..., min_length=2)
+
+    @field_validator("phone", mode="before")
+    @classmethod
+    def _clean_phone(cls, v):
+        return re.sub(r"[\s\-]", "", str(v or ""))
 
 
 class CounsellingLeadResponse(BaseModel):
@@ -2740,8 +2809,10 @@ async def create_counselling_lead(input: CounsellingLeadCreate, request: Request
         doc['created_at'] = doc['created_at'].isoformat()
         await db.counselling_leads.insert_one(doc)
         
-        # Send WhatsApp thank you
-        await send_whatsapp_thank_you(input.phone, input.name, "Counselling Request")
+        # Instant WhatsApp confirmation via MSG91 'etiweb' template (non-blocking)
+        task = asyncio.create_task(send_counselling_whatsapp(input.phone, input.name))
+        _background_tasks.add(task)
+        task.add_done_callback(_background_tasks.discard)
         
         # Send to CRM
         queue_crm_lead(lead_id=doc.get('id'), name=input.name, phone=input.phone, source="Free Counselling", program_name=input.preferred_track)

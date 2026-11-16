@@ -75,3 +75,11 @@
 - Shared components extracted: `components/PartnerLogoMarquee.jsx`, `components/FloatingBadge.jsx` (used by HomeHero + the counselling page).
 - Tested: iteration_13 (all pass). The badge clipping at 1280/1024 and the #top scroll margin were fixed afterwards.
 - Known (pre-existing, site-wide): `overflow-x:hidden` on html/body stops sticky headers from sticking; switching to `overflow-x:clip` would fix it.
+
+## Update — Nov 2026 (Round 6: blog HTML, MSG91 WhatsApp, phone validation)
+- Blog content: replaced the bleach whitelist (it stripped inline styles and escaped `>` in <style>) with a BeautifulSoup sanitizer `sanitize_html` that keeps all HTML/CSS (style blocks, inline styles, classes, https stylesheet links) and removes only script vectors (script/object/embed/form/meta/base, on* handlers, javascript:/vbscript: values, srcdoc, SVG animate/set).
+- Blog page/admin preview: content with custom CSS renders in `.blog-custom-html` (no Tailwind prose). Pasted <style> is wrapped in `@scope (.blog-custom-html)` (html/body → :scope) so it can't restyle the site (`lib/blogHtml.js`).
+- Counselling WhatsApp: `send_counselling_whatsapp` posts the MSG91 'etiweb' template (integrated 918728054145, body_1 = name, authkey from env MSG91_AUTH_KEY) as a background task on each counselling lead. Verified: MSG91 returns success.
+- Phone validation (counselling): backend `^[6-9]\d{9}$` (spaces/dashes stripped, else 422). Frontend: digits only, strips a pasted +91/0, inline error.
+- Tested: iteration_14 (all pass). Sanitizer gaps, the task reference and the paste bug were fixed afterwards.
+- Pending: confirm the body_1 value for the etiweb template (currently the student name).

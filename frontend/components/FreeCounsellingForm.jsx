@@ -6,8 +6,11 @@ import { toast } from 'sonner';
 import { trackCounsellingLead } from '@/lib/analytics';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
+const PHONE_RE = /^[6-9]\d{9}$/;
+const PHONE_MSG = 'Enter a valid 10-digit mobile number starting with 6, 7, 8 or 9';
 
 export default function FreeCounsellingForm() {
+  const [phoneError, setPhoneError] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -25,10 +28,10 @@ export default function FreeCounsellingForm() {
       return;
     }
 
-    // Phone validation
-    const phoneRegex = /^[6-9]\d{9}$/;
-    if (!phoneRegex.test(formData.phone.replace(/\D/g, ''))) {
-      toast.error('Please enter a valid 10-digit phone number');
+    // Phone validation: 10 digits starting with 6, 7, 8 or 9
+    if (!PHONE_RE.test(formData.phone)) {
+      setPhoneError(PHONE_MSG);
+      toast.error(PHONE_MSG);
       return;
     }
     
@@ -102,13 +105,24 @@ export default function FreeCounsellingForm() {
       <div>
         <input
           type="tel"
-          placeholder="Phone Number *"
+          inputMode="numeric"
+          maxLength={14}
+          placeholder="10-digit Mobile Number *"
           value={formData.phone}
-          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-          className="form-input text-lg py-4"
+          onChange={(e) => {
+            let phone = e.target.value.replace(/\D/g, '');
+            if (phone.length > 10) phone = phone.replace(/^(91|0)/, '');
+            phone = phone.slice(0, 10);
+            setFormData({ ...formData, phone });
+            setPhoneError(phone && !/^[6-9]/.test(phone) ? PHONE_MSG : '');
+          }}
+          onBlur={() => formData.phone && !PHONE_RE.test(formData.phone) && setPhoneError(PHONE_MSG)}
+          className={`form-input text-lg py-4 ${phoneError ? 'border-red-500 focus:border-red-500' : ''}`}
+          aria-invalid={!!phoneError}
           required
           data-testid="counselling-phone-input"
         />
+        {phoneError && <p className="text-sm text-red-600 mt-1.5" data-testid="counselling-phone-error">{phoneError}</p>}
       </div>
       
       <div className="grid grid-cols-2 gap-4">

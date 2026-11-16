@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { Calendar, Clock, User, ArrowLeft, Tag, ArrowRight } from 'lucide-react';
 import { cloudImg } from '@/lib/utils';
 import ReadingProgress from '@/components/ReadingProgress';
+import { hasCustomStyles, scopeBlogStyles } from '@/lib/blogHtml';
 
 const SITE_URL = 'https://www.etieducom.com';
 // For server-side fetches, prefer internal backend URL (avoids loops through the public domain)
@@ -225,8 +226,9 @@ export default async function BlogDetailPage({ params }) {
 
       <article className="max-w-4xl mx-auto px-4 sm:px-6 pb-16">
         <div
-          className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-headings:font-bold prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-primary prose-img:rounded-xl"
-          dangerouslySetInnerHTML={{ __html: blog.content }}
+          className={hasCustomStyles(blog.content) ? 'blog-custom-html' : 'prose prose-lg max-w-none prose-headings:text-gray-900 prose-headings:font-bold prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-primary prose-img:rounded-xl'}
+          data-testid="blog-content"
+          dangerouslySetInnerHTML={{ __html: hasCustomStyles(blog.content) ? scopeBlogStyles(blog.content) : blog.content }}
         />
 
         {/* FAQ Section */}
