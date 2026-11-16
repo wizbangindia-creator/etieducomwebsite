@@ -1,0 +1,38 @@
+{
+  "summary": "Round 5: tested the IIDE-style hero on /free-counselling (backend plus UI at 1920/1440/1280/1024/390) and the home hero regression. The hero renders as specified. The grid background, navy H1, bold 'Talk on Call or Visit Our Pathankot Campus.' line, counselling-logo-strip (36 imgs, 0 broken), 3-item highlights, tel: call link, form card on a blue shape and 3 badges all show. With the float animation paused, no badge's bounding box overlaps the name/phone/education/track inputs or the submit button at any desktop width. Below sm the badges are hidden. The form works as before: an empty submit triggers native required validation, an invalid phone shows the toast 'Please enter a valid 10-digit phone number', a valid submit returns POST /api/counselling-leads 200 and redirects to /thank-you?source=counselling&name=..., and the lead is stored in Mongo. On mobile 390 there is no horizontal overflow (scrollWidth 390), the counselling-mobile-book-btn scrolls to #top, and the input accepts typing. The rest of the page renders: credentials, how it works, coverage, partners, testimonials, FAQ, final CTA and footer, with no broken images. Home hero regression: hero-logo-strip has 36 loaded imgs and all 3 hero badges are visible.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "tests/test_lead_forms.py::test_counselling_lead_success_and_crm", "issue": "This test is out of date and unrelated to Round 5. It checks backend.err.log for 'CRM webhook sent: <name>', but the endpoint now calls queue_crm_lead (async queue), so the log line is not found. The API itself returns 200. The test also creates leads without cleaning them up. I deleted the one it created by id."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "/free-counselling at 1280 width", "issues": ["counselling-badge-rating (right edge at x=1288) and counselling-badge-callback (right edge at x=1296) get cut off by the viewport/section overflow-hidden, so their text is clipped ('Callback in' shows as 'Callback i'). The xl:-right-10/-right-12 offsets apply from 1280, where container padding is only 32px. Consider using xl:-right-4 or applying the larger offsets only at 2xl."]},
+      {"screen": "/free-counselling at 1024 width", "issues": ["counselling-badge-callback sits over the '5000+ trained' trust item in the card footer. It does not cover any input. The selects are also narrow, so the placeholders are truncated ('Education *' cut off, 'Preferred T...')."]},
+      {"screen": "/free-counselling mobile 390", "issues": ["The #top anchor is on the <form>, so after the jump the name input sits flush at viewport top 0 and the card heading 'Book Your Free Session' is scrolled out of view. Consider adding scroll-mt-6 or moving id=top to counselling-form-card."]},
+      {"screen": "/free-counselling header (all widths)", "issues": ["counselling-header has 'sticky top-0' but does not stick, because html and body have overflow-x:hidden (after scrolling, the header rect is at -1500). This is probably pre-existing and site-wide. Using overflow-x:clip on html/body would make sticky work."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_counselling_r5.py", "/app/test_reports/pytest/pytest_counselling_r5.xml"],
+  "action_items": [
+    "Pull the right-side counselling badges in at 1280 (xl) so they are not clipped",
+    "Optional: at 1024, move counselling-badge-callback so it does not cover the '5000+ trained' footer item",
+    "Optional: add a scroll margin to the #top anchor, or move it to the form card",
+    "Optional: update test_lead_forms.py CRM log assertions for the queued CRM flow",
+    "Optional: the sticky header does not work because of overflow-x:hidden on html/body (use overflow-x:clip)"
+  ],
+  "critical_code_review_comments": [
+    "FreeCounsellingForm still has an unused 'submitted' state branch (setSubmitted is never called, because the form redirects). This is dead code.",
+    "free-counselling/page.js: FormCard is wrapped in 'lg:sticky lg:top-24'. That has little effect because the grid has items-start and the column heights are similar. It is harmless.",
+    "PartnerLogoMarquee/FloatingBadge extraction is clean, and the home hero still uses them correctly."
+  ],
+  "updated_files": ["/app/backend/tests/test_counselling_r5.py"],
+  "success_rate": {"backend": "100% (3/3 new; 1 old test fails because it is out of date)", "frontend": "100% functional; 4 minor design notes"},
+  "seed_data_creation": "None. 3 TEST_ counselling leads were created (pytest, the old test_lead_forms test, and the UI submit). All were deleted by id via pymongo.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Use wait_until=domcontentloaded and accept the cookie banner. Run single pytest files with `-c /dev/null --rootdir=/app/backend` and export REACT_APP_BACKEND_URL. Counselling leads can be cleaned up by id via pymongo (db test_database, collection counselling_leads). Add '.animate-float{animation:none}' before measuring badge overlap."
+}

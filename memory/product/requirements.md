@@ -23,3 +23,7 @@ Reference screenshots the user shared (inspiration for the style/layout, use ETI
 - NIIT reference for the helper: floating bot bubble "Click me to find your program" (bottom-left in the NIIT learning-journey screenshot above).
 - Hero reference (IIDE hero: big headline, subline, "Online or Offline" line, scrolling brand logo strip, 3-point highlight bar, "Choose The Right Program" button, person cut-out on a blue shape with floating badges like "Get placed at top companies", "Get a super hike", "Build your portfolio", grid background; followed by outcome stat cards): https://customer-assets-0z36b82j.emergentagent.net/job_etiedu--2a2o31hh/artifacts/4d53ab09db6a3256_Screenshot%202026-11-16%20at%2004.51.51.webp
 - Use ETI's own content and numbers. Keep the 5000+ stat appearing once on the home page (Round 3 rule).
+
+## Round 5 (user's words, verbatim)
+"as we designed the home poge hero section so make the free counselling page also like that"
+- Context: the home page hero built in Round 4 (IIDE-style). Apply that same hero style to the Free Counselling page. The counselling booking form must keep working exactly as before.

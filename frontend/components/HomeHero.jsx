@@ -3,33 +3,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Briefcase, Award, FolderOpen, ChevronRight, Sparkles } from 'lucide-react';
-import Marquee from '@/components/Marquee';
-
-const P = '/images/partners';
-const LOGOS = [
-  { name: 'Microsoft', src: `${P}/microsoft.svg` },
-  { name: 'Adobe', src: `${P}/adobe.svg` },
-  { name: 'Cisco', src: `${P}/cisco.svg` },
-  { name: 'IBM', src: `${P}/ibm.svg` },
-  { name: 'Meta', src: `${P}/meta.svg` },
-  { name: 'EC-Council', src: `${P}/eccouncil.png` },
-  { name: 'Autodesk', src: `${P}/autodesk.png` },
-  { name: 'Tally', src: `${P}/tally.png` },
-  { name: 'QuickBooks', src: `${P}/quickbooks.png` },
-];
+import PartnerLogoMarquee from '@/components/PartnerLogoMarquee';
+import FloatingBadge from '@/components/FloatingBadge';
 
 const HIGHLIGHTS = ['3–12 Month Programs', '100% Placement Assistance', 'Globally Recognised Certifications'];
 
 export const openProgramFinder = () => window.dispatchEvent(new Event('open-program-finder'));
-
-function FloatingBadge({ icon: Icon, children, className, testId }) {
-  return (
-    <div className={`absolute z-20 flex items-center gap-2 rounded-xl border border-gray-900/80 px-3 py-2 text-sm leading-tight text-gray-900 shadow-[3px_3px_0_0_rgba(17,24,39,0.9)] animate-float ${className}`} data-testid={testId}>
-      <Icon className="w-5 h-5 flex-shrink-0" />
-      <span>{children}</span>
-    </div>
-  );
-}
 
 function HeroVisual() {
   return (
@@ -61,10 +40,7 @@ export default function HomeHero() {
           <p className="text-lg font-bold text-gray-900 mb-6">Classroom + Lab Training. Learn by Doing.</p>
           <p className="text-sm text-gray-500 mb-3">Get certified by global technology leaders like:</p>
           <div className="mb-6 max-w-2xl">
-            <Marquee items={LOGOS} duration={30} testid="hero-logo-strip" renderItem={(l) => (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={l.src} alt={l.name} className="h-8 w-28 object-contain mx-2" loading="eager" />
-            )} />
+            <PartnerLogoMarquee testid="hero-logo-strip" />
           </div>
           <div className="grid sm:grid-cols-3 rounded-xl border border-gray-200 bg-white/80 backdrop-blur mb-8 max-w-2xl divide-y sm:divide-y-0 sm:divide-x divide-gray-200" data-testid="hero-highlights">
             {HIGHLIGHTS.map((h) => <p key={h} className="px-4 py-3 text-sm font-semibold text-[#0b1f6b]">{h}</p>)}

@@ -69,3 +69,9 @@
 - `components/OutcomesSection.jsx`: outcome count-up cards (5,000+ appears only here on home) + Quick Enquiry form (HeroForm). AnimatedStatsSection is no longer used on home.
 - `components/ProgramFinder.jsx` (site-wide via (site)/layout.js): NIIT-style floating bot (bottom-left), a 3-question chat flow, instant top match + 2 alternatives, callback → POST /api/quick-enquiry (source "program-finder"). It hides while the hero CTA is visible and closes on route change.
 - Tested: iteration_12 (all pass). The overlap and close-on-nav issues were fixed afterwards.
+
+## Update — Nov 2026 (Round 5: counselling hero restyle)
+- /free-counselling hero now matches the home IIDE-style hero: grid background, navy headline, partner logo marquee, 3-point highlight bar, form card on a blue shape with neo-brutal floating badges. Form logic is unchanged.
+- Shared components extracted: `components/PartnerLogoMarquee.jsx`, `components/FloatingBadge.jsx` (used by HomeHero + the counselling page).
+- Tested: iteration_13 (all pass). The badge clipping at 1280/1024 and the #top scroll margin were fixed afterwards.
+- Known (pre-existing, site-wide): `overflow-x:hidden` on html/body stops sticky headers from sticking; switching to `overflow-x:clip` would fix it.

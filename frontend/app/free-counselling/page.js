@@ -5,6 +5,8 @@ import {
   Clock, Star, Target, TrendingUp, Lock, MapPin, BadgeCheck, CalendarCheck, PhoneCall, MessageSquare
 } from 'lucide-react';
 import FreeCounsellingForm from '@/components/FreeCounsellingForm';
+import PartnerLogoMarquee from '@/components/PartnerLogoMarquee';
+import FloatingBadge from '@/components/FloatingBadge';
 import { Toaster } from 'sonner';
 
 export const metadata = {
@@ -36,11 +38,6 @@ const credentials = [
   { icon: CalendarCheck, label: 'Trusted Since 2017' },
 ];
 
-const heroPoints = [
-  'One-on-one session with a certified career counsellor',
-  'Honest course advice based on your education and goals',
-  'No fees, no pressure, no obligation to enroll',
-];
 
 const steps = [
   { icon: MessageSquare, title: 'Share your details', desc: 'Fill the short form with your name, phone, education and area of interest. It takes under a minute.' },
@@ -99,12 +96,14 @@ function LandingHeader() {
   );
 }
 
+const heroHighlights = ['100% Free Session', 'Callback Within 24 Hours', 'No Obligation to Enroll'];
+
 function FormCard() {
   return (
-    <div className="bg-white rounded-3xl shadow-[0_30px_80px_-20px_rgba(21,69,234,0.25)] border border-gray-100 overflow-hidden" data-testid="counselling-form-card">
-      <div className="bg-gray-900 text-white px-6 sm:px-8 py-5">
+    <div className="relative z-10 bg-white rounded-3xl border border-gray-900/80 shadow-[8px_8px_0_0_#0b1f6b] overflow-hidden" data-testid="counselling-form-card">
+      <div className="bg-[#0b1f6b] text-white px-6 sm:px-8 py-5">
         <h2 className="text-xl font-bold">Book Your Free Session</h2>
-        <p className="text-gray-400 text-sm mt-1">A counsellor will call you within 24 hours</p>
+        <p className="text-blue-200 text-sm mt-1">A counsellor will call you within 24 hours</p>
       </div>
       <div className="p-6 sm:p-8">
         <FreeCounsellingForm />
@@ -118,46 +117,50 @@ function FormCard() {
   );
 }
 
+function HeroFormVisual() {
+  return (
+    <div className="relative lg:sticky lg:top-24 pt-6 pb-4 px-2 sm:px-6" data-testid="counselling-hero-visual">
+      <div className="absolute inset-x-6 sm:inset-x-10 top-0 bottom-0 bg-primary rounded-[2.5rem_2.5rem_7rem_7rem] rotate-2" />
+      <FloatingBadge icon={Target} className="hidden sm:flex bg-lime-200 -left-4 xl:-left-10 -bottom-3" testId="counselling-badge-roadmap">Personalised<br /><strong>career roadmap</strong></FloatingBadge>
+      <FloatingBadge icon={Star} className="hidden sm:flex bg-white -right-2 2xl:-right-10 -top-2 [animation-delay:1s]" testId="counselling-badge-rating">Rated <strong>4.8/5</strong><br />by students</FloatingBadge>
+      <FloatingBadge icon={PhoneCall} className="hidden 2xl:flex bg-blue-100 -right-12 bottom-[12%] [animation-delay:2s]" testId="counselling-badge-callback">Callback in<br /><strong>24 hours</strong></FloatingBadge>
+      <FormCard />
+    </div>
+  );
+}
+
 function Hero() {
   return (
-    <section className="relative bg-gradient-to-b from-slate-50 to-white pt-12 pb-20 lg:pt-16 lg:pb-28 overflow-hidden" data-testid="counselling-hero">
-      <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="container-main relative grid lg:grid-cols-[1.1fr_1fr] gap-12 lg:gap-16 items-start">
-        <div className="animate-fade-in">
-          <div className="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm font-medium mb-6 shadow-sm">
+    <section className="relative bg-white pt-10 pb-20 lg:pt-14 lg:pb-24 overflow-hidden" data-testid="counselling-hero">
+      <div className="absolute inset-y-0 right-0 w-full lg:w-[55%] bg-[linear-gradient(rgba(15,23,42,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(15,23,42,0.07)_1px,transparent_1px)] bg-[size:44px_44px] [mask-image:linear-gradient(to_left,#000_60%,transparent)] pointer-events-none" />
+      <div className="container-main relative grid lg:grid-cols-[1.2fr_1fr] gap-12 lg:gap-16 items-start">
+        <div className="min-w-0 animate-fade-in lg:pt-6">
+          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-sm font-semibold mb-6">
             <span className="w-2 h-2 bg-green-500 rounded-full" /> Free 1-on-1 Career Counselling
           </div>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
-            Plan Your IT Career with <span className="text-primary">Expert Guidance</span>
+          <h1 className="text-4xl sm:text-5xl lg:text-[3.4rem] font-bold leading-[1.1] text-[#0b1f6b] mb-6">
+            Plan Your Tech Career with ETI Educom<span className="text-primary"> — Free Expert Counselling</span>
           </h1>
-          <p className="text-lg text-gray-600 leading-relaxed mb-8 max-w-xl">
-            Not sure which course is right for you? Speak with an ETI Educom career counsellor and get
-            clear, honest advice on the program, certifications and career path that fit your goals.
+          <p className="text-lg text-gray-700 leading-relaxed mb-4 max-w-2xl">
+            Not sure which course is right for you? Speak with a certified career counsellor and get clear,
+            honest advice on the program, certifications and career path that fit your goals.
           </p>
-          <a href="#top" className="lg:hidden btn-primary w-full justify-center mb-8" data-testid="counselling-mobile-book-btn">
-            Book My Free Session <ChevronRight className="w-5 h-5" />
-          </a>
-          <ul className="space-y-3 mb-10">
-            {heroPoints.map((p) => (
-              <li key={p} className="flex items-start gap-3 text-gray-700">
-                <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" /> {p}
-              </li>
-            ))}
-          </ul>
-          <div className="relative hidden sm:block rounded-3xl overflow-hidden aspect-[16/9] shadow-xl">
-            <Image src="/images/counselling-session.jpg" alt="ETI Educom counsellor guiding a student and parent" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" priority />
-            <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur rounded-2xl px-4 py-3 shadow-lg flex items-center gap-3">
-              <div className="flex">{[0, 1, 2, 3, 4].map((i) => <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />)}</div>
-              <span className="text-sm font-semibold text-gray-900">Rated 4.8/5 by students</span>
-            </div>
+          <p className="text-lg font-bold text-gray-900 mb-6">Talk on Call or Visit Our Pathankot Campus.</p>
+          <p className="text-sm text-gray-500 mb-3">Our programs lead to certifications from global leaders like:</p>
+          <div className="mb-6 max-w-2xl"><PartnerLogoMarquee testid="counselling-logo-strip" /></div>
+          <div className="grid sm:grid-cols-3 rounded-xl border border-gray-200 bg-white/80 backdrop-blur mb-8 max-w-2xl divide-y sm:divide-y-0 sm:divide-x divide-gray-200" data-testid="counselling-hero-highlights">
+            {heroHighlights.map((h) => <p key={h} className="px-4 py-3 text-sm font-semibold text-[#0b1f6b]">{h}</p>)}
+          </div>
+          <div className="flex flex-wrap gap-4">
+            <a href="#top" className="lg:hidden inline-flex items-center gap-2 bg-[#0b1f6b] text-white font-semibold px-8 py-4 rounded-lg hover:bg-primary transition-colors" data-testid="counselling-mobile-book-btn">
+              Book My Free Session <ChevronRight className="w-5 h-5" />
+            </a>
+            <a href={PHONE_HREF} className="inline-flex items-center gap-2 border-2 border-[#0b1f6b] text-[#0b1f6b] font-semibold px-8 py-4 rounded-lg hover:bg-[#0b1f6b] hover:text-white transition-colors" data-testid="counselling-hero-call-link">
+              <Phone className="w-5 h-5" /> Call {PHONE}
+            </a>
           </div>
         </div>
-        <div className="lg:sticky lg:top-24">
-          <FormCard />
-          <p className="text-center text-sm text-gray-500 mt-5">
-            Prefer to talk now? Call <a href={PHONE_HREF} className="text-primary font-semibold hover:underline" data-testid="counselling-hero-call-link">{PHONE}</a>
-          </p>
-        </div>
+        <HeroFormVisual />
       </div>
     </section>
   );
