@@ -63,3 +63,9 @@
 - New `components/EtiAdvantage.jsx` replaces the About section and the old "Why Choose Us" (6 advantages + image hero card).
 - The 5000+ stat now appears only once on home (AnimatedStatsSection). Removed from the hero trust row and the HeroForm.
 - Tested: iteration_11 (all pass). The carousel dot-count bug was fixed afterwards and verified.
+
+## Update — Nov 2026 (Round 4: Program Finder + IIDE-style hero)
+- `components/HomeHero.jsx`: IIDE-style hero (grid bg, headline, partner logo marquee, 3-point highlight bar, "Choose The Right Program" opens the finder, student cut-out /images/hero-student.webp on a blue shape with floating badges).
+- `components/OutcomesSection.jsx`: outcome count-up cards (5,000+ appears only here on home) + Quick Enquiry form (HeroForm). AnimatedStatsSection is no longer used on home.
+- `components/ProgramFinder.jsx` (site-wide via (site)/layout.js): NIIT-style floating bot (bottom-left), a 3-question chat flow, instant top match + 2 alternatives, callback → POST /api/quick-enquiry (source "program-finder"). It hides while the hero CTA is visible and closes on route change.
+- Tested: iteration_12 (all pass). The overlap and close-on-nav issues were fixed afterwards.

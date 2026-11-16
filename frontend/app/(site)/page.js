@@ -1,10 +1,10 @@
 import Link from 'next/link';
 import { ChevronRight, Phone, Zap } from 'lucide-react';
-import HeroForm from '@/components/HeroForm';
+import HomeHero from '@/components/HomeHero';
+import OutcomesSection from '@/components/OutcomesSection';
 import ReviewsSection from '@/components/ReviewsSection';
 import EventsSection from '@/components/EventsSection';
 import BlogsSection from '@/components/BlogsSection';
-import AnimatedStatsSection from '@/components/AnimatedStatsSection';
 import PartnersSection from '@/components/PartnersSection';
 import ProgramsCarousel from '@/components/ProgramsCarousel';
 import LearningJourney from '@/components/LearningJourney';
@@ -31,51 +31,9 @@ export const metadata = {
 export default function HomePage() {
   return (
     <div className="min-h-screen">
-      {/* Hero Section - White/Light Background */}
-      <section className="relative bg-gradient-to-b from-gray-50 to-white py-16 lg:py-24 overflow-hidden">
-        {/* Subtle Background Pattern */}
-        <div className="absolute inset-0">
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px]"></div>
-          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gray-200/50 rounded-full blur-[80px]"></div>
-        </div>
-        
-        <div className="container-main relative">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left Content */}
-            <div className="space-y-6">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-gray-900">
-                Building Careers in
-                <span className="block mt-2 text-primary">Technology</span>
-              </h1>
-              
-              <p className="text-lg text-gray-600 max-w-xl leading-relaxed">
-                ETI Educom is a premier Computer Career School dedicated to bridging the gap between 
-                academic education and industry requirements. We deliver structured, certification-focused 
-                training programs that prepare professionals for successful careers in technology.
-              </p>
-              
-              <div className="flex flex-wrap gap-4 pt-4">
-                <Link href="/free-counselling" className="btn-primary">
-                  Request Free Consultation
-                  <ChevronRight className="w-5 h-5" />
-                </Link>
-                <Link href="/programs" className="btn-secondary">
-                  View Programs
-                </Link>
-              </div>
-              
-            </div>
-            
-            {/* Right - Enquiry Form */}
-            <div className="lg:pl-8">
-              <HeroForm />
-            </div>
-          </div>
-        </div>
-      </section>
+      <HomeHero />
 
-      {/* Animated Stats Section */}
-      <AnimatedStatsSection />
+      <OutcomesSection />
 
       <ProgramsCarousel />
 

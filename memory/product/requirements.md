@@ -17,3 +17,9 @@ Reference screenshots the user shared (inspiration for the style/layout, use ETI
 - Course cards reference (IIDE "Our Programs": photo cards with Offline/Online tag, dark blue bottom with title, Duration, Best For, deadline line, white "View Program" button, category filter pills All/Marketing/Business/AI, carousel with dots): https://customer-assets-0z36b82j.emergentagent.net/job_etiedu--2a2o31hh/artifacts/6849c2c27a18e709_Screenshot%202026-11-16%20at%2004.53.59.webp
 - Learning journey reference (NIIT "How it works – Your Learning Journey": 5 numbered steps Enroll, Start Orientation, Learn, Practice, Get Hired*): https://customer-assets-0z36b82j.emergentagent.net/job_etiedu--2a2o31hh/artifacts/d5d8e9b876f44a16_Screenshot%202026-11-16%20at%2004.57.55.webp
 (If the screenshot order is unclear, match by content.)
+
+## Round 4 (user's words, verbatim)
+"Program Finder Bot: Add a "find your program" helper like NIIT's that suggests a course in seconds, and in the attached image see the hero section how amzing it is"
+- NIIT reference for the helper: floating bot bubble "Click me to find your program" (bottom-left in the NIIT learning-journey screenshot above).
+- Hero reference (IIDE hero: big headline, subline, "Online or Offline" line, scrolling brand logo strip, 3-point highlight bar, "Choose The Right Program" button, person cut-out on a blue shape with floating badges like "Get placed at top companies", "Get a super hike", "Build your portfolio", grid background; followed by outcome stat cards): https://customer-assets-0z36b82j.emergentagent.net/job_etiedu--2a2o31hh/artifacts/4d53ab09db6a3256_Screenshot%202026-11-16%20at%2004.51.51.webp
+- Use ETI's own content and numbers. Keep the 5000+ stat appearing once on the home page (Round 3 rule).

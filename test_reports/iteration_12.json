@@ -1,0 +1,32 @@
+{
+  "summary": "Round 4 (Program Finder bot + IIDE-style hero + Outcomes) tested. Backend: POST /api/quick-enquiry with source 'program-finder' persists correctly (3/3 pytest). Frontend: the hero renders fully (headline, subline, Classroom + Lab line, 9 partner logos all loaded, 3 highlights, person on a blue shape, 3 badges). At 1920, 1280 and 390 there is no horizontal overflow, no badge clipping and no badge overlap. Choose-program button opens the finder and Free Counselling goes to /free-counselling. Bubble and hint show on /, /about, /programs and /contact; the hint opens the panel and can be dismissed; the bubble toggles the panel. I ran all 72 answer combinations (6x4x3). Every recommended top/alt slug (14 unique) returns 200; e.g. Data & AI + Working professional gives ai-engineering. Restart and close work. Callback form: empty and short-phone input show finder-form-error; a valid submit POSTs {source:'program-finder', interest:<top title>} and shows the thank-you. Outcomes: 4 cards count up to 5,000+/95%/40+/15+. '5,000' appears exactly once in the home page body. HeroForm in outcomes redirects to /thank-you. Programs carousel, Learning Journey and ETI Advantage sections render. Home footer has no Head Office. At 390 the bubble (y 708-764) sits above the sticky bar (y 784).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "ProgramFinder bubble + hint vs HomeHero CTA", "issue": "On common laptop viewports (1280x800, 1366x768) the fixed bot bubble (bottom-6 left-6) and the 'Click me to find your program' hint sit right on top of the hero's primary 'Choose The Right Program' button above the fold. elementFromPoint on the CTA hits program-finder-bubble / program-finder-hint-btn. Clicking still opens the finder, since both do the same thing, but the main CTA is visually hidden. Not an issue at 1920x1080.", "selector": "[data-testid='hero-choose-program-btn'], [data-testid='program-finder-bubble']", "priority": "MEDIUM"},
+      {"component": "ProgramFinder panel", "issue": "After clicking View Program or an alternative link, the user lands on /programs/<slug> but the finder panel stays open and covers part of the program page. Consider closing the panel on link click or route change.", "selector": "[data-testid='finder-view-top-btn'], [data-testid^='finder-alt-']", "priority": "LOW"},
+      {"component": "ProgramFinder panel (mobile 390)", "issue": "Panel (bottom 748px) covers the bot bubble (708-764), so the bubble cannot be used to toggle it on mobile. The panel's X close button still works.", "selector": "[data-testid='program-finder-panel']", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Home mobile 390", "issues": ["The WhatsApp 'Need help?' bubble and the bot bubble both float over the hero highlights/content right above the sticky bar, which makes the bottom of the screen crowded (3 floating widgets plus the sticky bar)."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_program_finder.py", "/app/test_reports/pytest/pytest_program_finder.xml"],
+  "action_items": [
+    "Stop the bot bubble/hint overlapping the hero 'Choose The Right Program' CTA at 1280-1366 widths (e.g. hide the hint while the hero CTA is in view, or adjust the hero bottom padding or bubble position)",
+    "Close the Program Finder panel when a recommendation link is clicked (or on pathname change)",
+    "Optional: on mobile, keep the bubble reachable when the panel is open, or hide the bubble while the panel is open"
+  ],
+  "critical_code_review_comments": [
+    "ProgramFinder: when scores tie, the order depends on object insertion order, so results are deterministic but arbitrary. This is acceptable.",
+    "CallbackForm sends the raw phone string. Backend min_length=10 applies to the raw string, so formatted input like '98765 4321' passes the client digit check only if it has 10 digits. This is fine.",
+    "PROGRAMS map in ProgramFinder duplicates titles/durations from programs/[programId]/page.js. Consider importing them from a shared source to avoid drift."
+  ],
+  "updated_files": ["/app/backend/tests/test_program_finder.py"],
+  "success_rate": {"backend": "100%", "frontend": "95%"},
+  "seed_data_creation": "None. The TEST_ quick-enquiry records created by pytest and the UI tests were deleted by id.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Use wait_until=domcontentloaded and accept the cookie banner. pytest.ini adds xdist args; run single files with `-c /dev/null --rootdir=/app/backend`. Admin needs TOTP, so clean up test quick_enquiries by id via pymongo."
+}

@@ -5,6 +5,7 @@ import AIChatWidget from '@/components/AIChatWidget';
 import NotificationBar from '@/components/NotificationBar';
 import { Toaster } from 'sonner';
 import CookieConsent from '@/components/CookieConsent';
+import ProgramFinder from '@/components/ProgramFinder';
 
 export default function SiteLayout({ children }) {
   return (
@@ -18,6 +19,7 @@ export default function SiteLayout({ children }) {
       <Footer />
       <MobileStickyBar />
       <AIChatWidget />
+      <ProgramFinder />
       <CookieConsent />
     </>
   );

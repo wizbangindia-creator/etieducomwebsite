@@ -207,6 +207,14 @@ body.has-announcement .main-content {
   animation: fade-in 0.3s ease-out forwards;
 }
 
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.animate-float { animation: float 4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .animate-float { animation: none; } }
+
+
 /* Infinite marquee (pauses on hover) */
 .marquee {
   overflow: hidden;
